@@ -5,18 +5,6 @@
 # MQTT settings
 ###
 
-# Broker IP or DNS Name
-MQTT_BROKER = "192.168.178.27"
-
-# Broker port
-# MQTT_PORT = 1883
-
-# Username or None for anonymous login
-MQTT_USERNAME = "mqttAccess"
-
-# Password or None for anonymous login
-MQTT_PASSWORD = "w62D?F[m"
-
 # Defines the mqtt connection timemout in seconds
 # MQTT_KEEPALIVE = 30
 
