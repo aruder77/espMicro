@@ -79,11 +79,12 @@ def write_profiles(profiles):
     with open(NETWORK_PROFILES, "w") as f:
         f.write(''.join(lines))
 
-def write_mqtt(mqttServer, mqttUser, mqttPassword):
+def write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo):
     lines = []
     lines.append("mqttServer;%s\n" % mqttServer)
     lines.append("mqttUser;%s\n" % mqttUser)
     lines.append("mqttPassword;%s\n" % mqttPassword)
+    lines.append("githubRepo;%s\n" % githubRepo)
     with open(MQTT_PROFILE, "w") as f:
         f.write(''.join(lines))
 
@@ -163,6 +164,10 @@ def handle_root(client):
                             <td>MQTT password:</td>
                             <td><input name="mqttPassword" type="password" /></td>
                         </tr>
+                        <tr>
+                            <td>Github Repo:</td>
+                            <td><input name="githubRepo" type="text" /></td>
+                        </tr>
                     </tbody>
                 </table>
                 <p style="text-align: center;">
@@ -198,7 +203,7 @@ def handle_root(client):
 
 
 def handle_configure(client, request):
-    match = ure.search("ssid=([^&]*)&password=([^&]*)&mqttServer=([^&]*)&mqttUser=([^&]*)&mqttPassword=(.*)", request)
+    match = ure.search("ssid=([^&]*)&password=([^&]*)&mqttServer=([^&]*)&mqttUser=([^&]*)&mqttPassword=([^&]*)&githubRepo=(.*)", request)
 
     if match is None:
         send_response(client, "Parameters not found", status_code=400)
@@ -210,6 +215,7 @@ def handle_configure(client, request):
         mqttServer = match.group(3).decode("utf-8").replace("%3F", "?").replace("%21", "!")
         mqttUser = match.group(4).decode("utf-8").replace("%3F", "?").replace("%21", "!")
         mqttPassword = match.group(5).decode("utf-8").replace("%3F", "?").replace("%21", "!")
+        githubRepo = match.group(6).decode("utf-8").replace("%3F", "?").replace("%21", "!")
 
         print('mqttServer: ' + mqttServer)
         print('mqttUser: ' + mqttUser)
@@ -244,7 +250,7 @@ def handle_configure(client, request):
             profiles = {}
         profiles[ssid] = password
         write_profiles(profiles)
-        write_mqtt(mqttServer, mqttUser, mqttPassword)
+        write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo)
 
         time.sleep(5)
 

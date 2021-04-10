@@ -1,15 +1,45 @@
-from lib.homie.device import HomieDevice
+from homie.device import HomieDevice
+from homie import __version__
 from mqtt_as import MQTTClient
 from homie.constants import (
     DEVICE_STATE,
-    QOS
+    QOS,
+    STATE_INIT,
+    MAIN_DELAY
 )
+from machine import unique_id
+from ubinascii import hexlify
+from uasyncio import sleep_ms
+from gc import collect
 
 
 class MyHomieDevice(HomieDevice):
 
     def __init__(self, settings, ssid, password, mqttServer, mqttUser, mqttPassword):
-        super().__init__(settings)
+        self.debug = getattr(settings, "DEBUG", False)
+
+        self._state = STATE_INIT
+        self._version = __version__
+        self._fw_name = "Microhomie"
+        self._extensions = getattr(settings, "EXTENSIONS", [])
+        self._bc_enabled = getattr(settings, "BROADCAST", False)
+        self._wifi = getattr(settings, "WIFI_CREDENTIALS", False)
+
+        self.first_start = True
+        self.stats_interval = getattr(settings, "DEVICE_STATS_INTERVAL", 60)
+        self.device_name = getattr(settings, "DEVICE_NAME", "")
+        self.callback_topics = {}
+
+        # Registered homie nodes
+        self.nodes = []
+
+        # Generate unique id if settings has no DEVICE_ID
+        self.device_id = getattr(settings, "DEVICE_ID", hexlify(unique_id()).decode())
+
+        # Base topic
+        self.btopic = getattr(settings, "MQTT_BASE_TOPIC", "homie")
+        # Device base topic
+        self.dtopic = "{}/{}".format(self.btopic, self.device_id)
 
         # mqtt_as client
         self.mqtt = MQTTClient(
@@ -33,4 +63,17 @@ class MyHomieDevice(HomieDevice):
             ssid=ssid,
             wifi_pw=password,
         )
-    
+
+    async def run(self):
+        while True:
+            try:
+                if self._wifi:
+                    await self.setup_wifi()
+                await self.mqtt.connect()
+                while True:
+                    collect()
+                    print(".", end='')
+                    await sleep_ms(MAIN_DELAY)
+            except OSError:
+                print("ERROR: can not connect to MQTT")
+                await sleep_ms(5000)

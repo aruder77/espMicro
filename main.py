@@ -1,13 +1,19 @@
+import wifimgr
+from app.controller import Controller
+import time, machine, network, gc
+from ota_updater.ota_updater import OTAUpdater
+import os
+
+MQTT_PROFILE = 'mqtt.dat'
+
+otaUpdater = None
+
 def connectToWifiAndUpdate():
-    import time, machine, network, gc
     time.sleep(1)
     print('Memory free', gc.mem_free())
 
-    from ota_updater import OTAUpdater
-
-    sta_if = network.WLAN(network.STA_IF)
-    print('network config:', sta_if.ifconfig())
-    otaUpdater = OTAUpdater('https://github.com/aruder77/espMicro', main_dir='app')
+    githubRepo = read_mqtt()
+    otaUpdater = OTAUpdater(githubRepo, main_dir='app')
     hasUpdated = otaUpdater.install_update_if_available()
     if hasUpdated:
         machine.reset()
@@ -15,11 +21,16 @@ def connectToWifiAndUpdate():
         del(otaUpdater)
         gc.collect()
 
-def startApp():
-    import app.start
-
+def read_mqtt():
+    with open(MQTT_PROFILE) as f:
+        lines = f.readlines()
+    githubRepo = lines[3].strip("\n").split(";")[1].replace('%2F', '/').replace('%3A', ':')
+    return githubRepo
 
 def main():
+    if 'configMode.txt' in os.listdir('/'):
+        os.remove('configMode.txt')
+        wifimgr.start()
     wlan = wifimgr.get_connection()
     if wlan is None:
         print("Could not initialize the network connection.")
@@ -27,9 +38,10 @@ def main():
             pass  # you shall not pass :D
 
     connectToWifiAndUpdate()
-    startApp()        
 
-
+    # start application controller
+    controller = Controller(otaUpdater)
+    controller.run()
 
 
 if __name__ == "__main__":
