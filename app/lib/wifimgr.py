@@ -2,13 +2,15 @@ import network
 import socket
 import ure
 import time
+from config_loader import read_profiles
+from config_loader import write_profiles
+from config_loader import write_mqtt
+
+NETWORK_PROFILES = 'wifi.dat'
 
 ap_ssid = "WifiManager"
 ap_password = "tayfunulu"
 ap_authmode = 3  # WPA2
-
-NETWORK_PROFILES = 'wifi.dat'
-MQTT_PROFILE = 'mqtt.dat'
 
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
@@ -61,32 +63,6 @@ def get_connection():
 
     return wlan_sta if connected else None
 
-
-def read_profiles():
-    with open(NETWORK_PROFILES) as f:
-        lines = f.readlines()
-    profiles = {}
-    for line in lines:
-        ssid, password = line.strip("\n").split(";")
-        profiles[ssid] = password
-    return profiles
-
-
-def write_profiles(profiles):
-    lines = []
-    for ssid, password in profiles.items():
-        lines.append("%s;%s\n" % (ssid, password))
-    with open(NETWORK_PROFILES, "w") as f:
-        f.write(''.join(lines))
-
-def write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo):
-    lines = []
-    lines.append("mqttServer;%s\n" % mqttServer)
-    lines.append("mqttUser;%s\n" % mqttUser)
-    lines.append("mqttPassword;%s\n" % mqttPassword)
-    lines.append("githubRepo;%s\n" % githubRepo)
-    with open(MQTT_PROFILE, "w") as f:
-        f.write(''.join(lines))
 
 def do_connect(ssid, password):
     wlan_sta.active(True)
@@ -215,7 +191,7 @@ def handle_configure(client, request):
         mqttServer = match.group(3).decode("utf-8").replace("%3F", "?").replace("%21", "!")
         mqttUser = match.group(4).decode("utf-8").replace("%3F", "?").replace("%21", "!")
         mqttPassword = match.group(5).decode("utf-8").replace("%3F", "?").replace("%21", "!")
-        githubRepo = match.group(6).decode("utf-8").replace("%3F", "?").replace("%21", "!")
+        githubRepo = match.group(6).decode("utf-8").replace("%3F", "?").replace("%21", "!").replace("%3A", ":").replace("%2F", "/")
 
         print('mqttServer: ' + mqttServer)
         print('mqttUser: ' + mqttUser)

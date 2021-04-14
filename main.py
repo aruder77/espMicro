@@ -1,18 +1,24 @@
-import wifimgr
-from app.controller import Controller
+import sys
 import time, machine, network, gc
-from ota_updater.ota_updater import OTAUpdater
 import os
 
-MQTT_PROFILE = 'mqtt.dat'
+sys.path.append('/app')
+sys.path.append('/app/lib')
+
+from controller import Controller
+import wifimgr
+from config_loader import read_mqtt
+from ota_updater.ota_updater import OTAUpdater
+
 
 otaUpdater = None
 
-def connectToWifiAndUpdate():
+def update():
     time.sleep(1)
     print('Memory free', gc.mem_free())
 
-    githubRepo = read_mqtt()
+    githubRepo = read_mqtt()[3]
+    
     otaUpdater = OTAUpdater(githubRepo, main_dir='app')
     hasUpdated = otaUpdater.install_update_if_available()
     if hasUpdated:
@@ -21,15 +27,10 @@ def connectToWifiAndUpdate():
         del(otaUpdater)
         gc.collect()
 
-def read_mqtt():
-    with open(MQTT_PROFILE) as f:
-        lines = f.readlines()
-    githubRepo = lines[3].strip("\n").split(";")[1].replace('%2F', '/').replace('%3A', ':')
-    return githubRepo
 
-def main():
-    if 'configMode.txt' in os.listdir('/'):
-        os.remove('configMode.txt')
+def connectToWifi():
+    if 'configMode' in os.listdir('/'):
+        os.remove('configMode')
         wifimgr.start()
     wlan = wifimgr.get_connection()
     if wlan is None:
@@ -37,7 +38,10 @@ def main():
         while True:
             pass  # you shall not pass :D
 
-    connectToWifiAndUpdate()
+
+def main():
+    connectToWifi()
+    update()
 
     # start application controller
     controller = Controller(otaUpdater)
