@@ -18,6 +18,7 @@
 # Base topic format is bytestring.
 MQTT_BASE_TOPIC = "devices"
 
+MQTT_BROKER = ""
 
 ###
 # Device settings
