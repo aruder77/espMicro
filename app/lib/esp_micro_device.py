@@ -100,6 +100,8 @@ class EspMicroDevice(HomieDevice):
 
                         self.timer = ticks_add(self.timer, LOOP_TIME)
 
+                        await sleep_ms(MAIN_DELAY)
+
             except OSError:
                 print("ERROR: can not connect to MQTT")
                 await sleep_ms(5000)
