@@ -2,8 +2,9 @@ from homie.constants import FALSE, TRUE, BOOLEAN
 from homie.node import HomieNode
 from homie.property import HomieProperty
 from machine import Pin
+from esp_micro_node import EspMicroNode
 
-class LED(HomieNode):
+class LED(EspMicroNode):
 
     # Reversed values for the esp8266 boards onboard led
     ONOFF = {FALSE: 1, TRUE: 0}

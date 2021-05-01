@@ -1,3 +1,4 @@
+from app.mydevice import MyDevice
 import settings
 import network
 
@@ -5,7 +6,7 @@ from machine import Pin
 import machine
 from primitives.pushbutton import Pushbutton
 
-from myhomie import MyHomieDevice
+from mydevice import MyDevice
 from led import LED
 
 from config_loader import read_profiles
@@ -29,7 +30,7 @@ class Controller:
         (mqttServer, mqttUser, mqttPassword, githubRepo) = read_mqtt()        
 
         # Homie device setup
-        self.homie = MyHomieDevice(settings, ssid, password, mqttServer, mqttUser, mqttPassword)
+        self.homie = MyDevice(settings, ssid, password, mqttServer, mqttUser, mqttPassword)
 
         # Add LED node to device
         self.homie.add_node(LED())
