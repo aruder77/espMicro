@@ -1,8 +1,9 @@
 from homie.node import HomieNode
 
 class EspMicroNode(HomieNode):
-    def __init__(self, id, name, type):
+    def __init__(self, device, id, name, type):
         super().__init__(id, name, type)
+        #self.device = device
 
     async def every100Milliseconds(self):
         pass
@@ -21,3 +22,6 @@ class EspMicroNode(HomieNode):
 
     async def everyDay(self):
         pass
+
+    def getLogger(self):
+        return self.device.getLogger()

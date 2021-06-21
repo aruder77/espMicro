@@ -10,7 +10,7 @@ class LogNode(EspMicroNode):
     _loggers = {}
 
     def __init__(self, device):
-        super().__init__(id="log", name="logNode", type="LOG")
+        super().__init__(device, id="log", name="logNode", type="LOG")
         self.device = device
                 
         self.p_level = HomieProperty(
@@ -32,7 +32,7 @@ class LogNode(EspMicroNode):
         if name in self._loggers:
             return self._loggers[name]
         l = getLogger(name)
-        l.addHandler(MqttLogHandler(self.device, name))
+        #l.addHandler(MqttLogHandler(self.device, name))
         #l.addHandler(FileLogHandler(self.device, name))
         self._loggers[name] = l
         return l

@@ -136,6 +136,8 @@ class HomieDevice:
 
     async def connection_handler(self, client):
         """subscribe to all registered device and node topics"""
+        self.dprint("CONNECTION_HANDLER!")
+
         if not self.first_start:
             await self.publish("{}/{}".format(self.dtopic, DEVICE_STATE), STATE_RECOVER)
 

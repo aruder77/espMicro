@@ -1,5 +1,5 @@
 # Debug mode disables WDT, print mqtt messages
-# DEBUG = False
+DEBUG = True
 
 ###
 # MQTT settings
@@ -19,6 +19,8 @@
 MQTT_BASE_TOPIC = "devices"
 
 MQTT_BROKER = ""
+
+
 
 ###
 # Device settings
