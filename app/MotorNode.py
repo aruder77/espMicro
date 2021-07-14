@@ -1,9 +1,9 @@
 from homie.constants import FALSE, BOOLEAN, INTEGER
 from homie.property import HomieProperty
+from homie.node import HomieNode
 from machine import Pin, PWM
-from esp_micro_node import EspMicroNode
 
-class MotorNode(EspMicroNode):
+class MotorNode(HomieNode):
 
     MAX_PWM = 220
     MIN_PWM = 30
@@ -17,8 +17,8 @@ class MotorNode(EspMicroNode):
     targetDirection = False
     currentIndex = 0
 
-    def __init__(self, device, pwmPin: int, pwmChannel: int, inverseDirection: bool):
-        super().__init__(device, id="fan%d" % pwmChannel, name="Fan%d" % pwmChannel, type="Fan")
+    def __init__(self, pwmPin: int, pwmChannel: int, inverseDirection: bool):
+        super().__init__(id="fan%d" % pwmChannel, name="Fan%d" % pwmChannel, type="Fan")
         #self.pwm = PWM(Pin(pwmPin), freq=4000)
         self.inverseDirection = inverseDirection
 

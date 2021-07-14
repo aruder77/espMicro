@@ -1,28 +1,34 @@
 from app.MotorsNode import MotorsNode
-from esp_micro_device import EspMicroDevice
+from homie.device import HomieDevice, await_ready_state
 from utime import time
 from MotorNode import MotorNode
-from led import LED
+import uasyncio as asyncio
+from uasyncio import sleep_ms
 
+WORKER_DELAY = const(100)
 
-class EspVentDevice(EspMicroDevice):
+class EspVentDevice(HomieDevice):
 
-    def __init__(self, settings, ssid, password, mqttServer, mqttUser, mqttPassword):
-        super().__init__(settings, ssid, password, mqttServer, mqttUser, mqttPassword)
+    counter = 0
+
+    def __init__(self, settings):
+        super().__init__(settings)
         #self.logger = self.getLogger()
 
         motorNodes = [
-            MotorNode(self, 4, 1, False),
-            MotorNode(self, 13, 2, True),
-            MotorNode(self, 14, 3, False),
-            MotorNode(self, 27, 4, True),
-            MotorNode(self, 26, 5, False),
-            MotorNode(self, 25, 6, True),
-            MotorNode(self, 33, 7, False),
-            MotorNode(self, 32, 8, True)
+            MotorNode(4, 1, False),
+            MotorNode(13, 2, True),
+            MotorNode(14, 3, False),
+            MotorNode(27, 4, True),
+            MotorNode(26, 5, False),
+            MotorNode(25, 6, True),
+            MotorNode(33, 7, False),
+            MotorNode(32, 8, True)
         ]
         for motorNode in motorNodes:
             self.add_node(motorNode)
+
+        asyncio.create_task(self.workerLoop())            
         
         #self.add_node(MotorsNode(self, motorNodes))
         #self.add_node(LED(self))
@@ -42,6 +48,17 @@ class EspVentDevice(EspMicroDevice):
         #self.add_node(LED(self,14, "LED 14"))
 
 
+    @await_ready_state
+    async def workerLoop(self):
+        counter = 0
+        while True: 
+            self.loop()
 
-    async def everySecond(self):
-        print ('.', end='')
+            await sleep_ms(WORKER_DELAY)
+
+
+    def loop(self):
+        if  self.counter % 10 == 0:
+            print ('.', end='')
+            self.counter = 0
+        self.counter += 1

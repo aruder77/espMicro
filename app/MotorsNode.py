@@ -1,8 +1,8 @@
 from homie.constants import FALSE, BOOLEAN, INTEGER
 from homie.property import HomieProperty
-from esp_micro_node import EspMicroNode
+from homie.node import HomieNode
 
-class MotorsNode(EspMicroNode):
+class MotorsNode(HomieNode):
 
     direction = False
     cycleTime = 75
@@ -10,8 +10,8 @@ class MotorsNode(EspMicroNode):
     loopCounter = 0
     mode = 0
 
-    def __init__(self, device, motorNodes):
-        super().__init__(device, id="fans", name="Fans", type="Fan")
+    def __init__(self, motorNodes):
+        super().__init__(id="fans", name="Fans", type="Fan")
         self.motorNodes = motorNodes
 
         self.speedProperty = HomieProperty(
@@ -111,7 +111,7 @@ class MotorsNode(EspMicroNode):
                 motorNode.setTargetDirection(self.direction)
 
 
-    async def every100Milliseconds(self):
+    def loop(self):
         if self.loopCounter == self.directionChangeLoopCount:
             # only in mode 0, change direction
             if self.mode == 0:

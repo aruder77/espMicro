@@ -5,5 +5,5 @@ class EspVentController(Controller):
     def __init__(self):
         super().__init__()
 
-    def createHomieDevice(self, settings, ssid, password, mqttServer, mqttUser, mqttPassword):
-        return EspVentDevice(settings, ssid, password, mqttServer, mqttUser, mqttPassword)
+    def createHomieDevice(self, settings):
+        return EspVentDevice(settings)

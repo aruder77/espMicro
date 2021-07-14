@@ -7,7 +7,7 @@ class OTAUpdater:
     optimized for low power usage.
     """
 
-    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', prefix='v', secrets_file=None, headers={}):
+    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', secrets_file=None, headers={}):
         self.http_client = HttpClient(headers=headers)
         self.github_repo = github_repo.rstrip('/').replace('https://github.com/', '')
         self.github_src_dir = '' if len(github_src_dir) < 1 else github_src_dir.rstrip('/') + '/'
@@ -15,7 +15,6 @@ class OTAUpdater:
         self.main_dir = main_dir
         self.new_version_dir = new_version_dir
         self.secrets_file = secrets_file
-        self.prefix = prefix
 
     def __del__(self):
         self.http_client = None
@@ -123,19 +122,9 @@ class OTAUpdater:
         return '0.0'
 
     def get_latest_version(self):
-        releases = self.http_client.get('https://api.github.com/repos/{}/releases'.format(self.github_repo))
-        releaseList = releases.json()
-        val = None
-        try:
-            val = next(r for r in releaseList if r['tag_name'].startswith(self.prefix))
-        except StopIteration:
-            val = None
-        releases.close()
-
-        version = None
-        if (val):
-            version = val['tag_name']
-
+        latest_release = self.http_client.get('https://api.github.com/repos/{}/releases/latest'.format(self.github_repo))
+        version = latest_release.json()['tag_name']
+        latest_release.close()
         return version
 
     def _download_new_version(self, version):

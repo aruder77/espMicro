@@ -20,12 +20,12 @@ class Controller:
         # read saved wifi and mqtt data
         profiles = read_profiles()
         wlan = network.WLAN(network.STA_IF)
-        ssid = wlan.config('essid')
-        password = profiles[ssid]
-        (mqttServer, mqttUser, mqttPassword, githubRepo) = read_mqtt()        
+        settings.WIFI_SSID = wlan.config('essid')
+        settings.WIFI_PASSWORD = profiles[settings.WIFI_SSID]
+        (settings.MQTT_BROKER, settings.MQTT_USER, settings.MQTT_PASSWORD, githubRepo) = read_mqtt()        
 
         # Homie device setup
-        self.homie = self.createHomieDevice(settings, ssid, password, mqttServer, mqttUser, mqttPassword)
+        self.homie = self.createHomieDevice(settings)
 
 
     def createHomieDevice(self, settings, ssid, password, mqttServer, mqttUser, mqttPassword):
