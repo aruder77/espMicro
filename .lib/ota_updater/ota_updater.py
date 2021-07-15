@@ -7,7 +7,7 @@ class OTAUpdater:
     optimized for low power usage.
     """
 
-    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', secrets_file=None, headers={}):
+    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', unstableVersions=False, secrets_file=None, headers={}):
         self.http_client = HttpClient(headers=headers)
         self.github_repo = github_repo.rstrip('/').replace('https://github.com/', '')
         self.github_src_dir = '' if len(github_src_dir) < 1 else github_src_dir.rstrip('/') + '/'
@@ -15,6 +15,7 @@ class OTAUpdater:
         self.main_dir = main_dir
         self.new_version_dir = new_version_dir
         self.secrets_file = secrets_file
+        self.unstableVersions = unstableVersions
 
     def __del__(self):
         self.http_client = None
@@ -34,7 +35,7 @@ class OTAUpdater:
         """
 
         (current_version, latest_version) = self._check_for_new_version()
-        if latest_version > current_version:
+        if latest_version[1:] > current_version[1:]:
             print('New version available, will download and install on next reboot')
             self._create_new_version_file(latest_version)
             return True
@@ -75,7 +76,7 @@ class OTAUpdater:
         """
 
         (current_version, latest_version) = self._check_for_new_version()
-        if latest_version > current_version:
+        if latest_version[1:] > current_version[1:]:
             print('Updating to version {}...'.format(latest_version))
             self._create_new_version_file(latest_version)
             self._download_new_version(latest_version)
@@ -122,8 +123,8 @@ class OTAUpdater:
         return '0.0'
 
     def get_latest_version(self):
-        latest_release = self.http_client.get('https://api.github.com/repos/{}/releases/latest'.format(self.github_repo))
-        version = latest_release.json()['tag_name']
+        latest_release = self.http_client.get('https://api.github.com/repos/{}/releases'.format(self.github_repo))
+        version = [ x['tag_name'] for x in latest_release.json() if (x['tag_name'].startswith('v') and self.unstableVersions) or x['tag_name'].startswith('r') ][0]
         latest_release.close()
         return version
 

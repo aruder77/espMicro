@@ -1,6 +1,12 @@
 from homie.constants import FALSE, BOOLEAN, INTEGER
 from homie.property import HomieProperty
 from homie.node import HomieNode
+from homie.device import await_ready_state
+import uasyncio as asyncio
+from uasyncio import sleep_ms
+
+
+WORKER_DELAY = const(100)
 
 class MotorsNode(HomieNode):
 
@@ -42,7 +48,17 @@ class MotorsNode(HomieNode):
             default=0,
             on_message=self.mode_msg,
         )
-        self.add_property(self.modeProperty)                
+        self.add_property(self.modeProperty)       
+
+        asyncio.create_task(self.workerLoop())            
+        
+
+    @await_ready_state
+    async def workerLoop(self):
+        while True: 
+            self.loop()
+
+            await sleep_ms(WORKER_DELAY)         
 
 
     def speed_msg(self, topic, payload, retained):

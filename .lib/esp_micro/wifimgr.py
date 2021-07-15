@@ -2,9 +2,9 @@ import network
 import socket
 import ure
 import time
-from config_loader import read_profiles
-from config_loader import write_profiles
-from config_loader import write_mqtt
+from esp_micro.config_loader import read_profiles
+from esp_micro.config_loader import write_profiles
+from esp_micro.config_loader import write_mqtt
 
 NETWORK_PROFILES = 'wifi.dat'
 
@@ -144,6 +144,14 @@ def handle_root(client):
                             <td>Github Repo:</td>
                             <td><input name="githubRepo" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td>install new versions automatically</td>
+                            <td><input type="checkbox" id="autoUpdate" name="autoUpdate" checked></td>
+                        </tr>
+                        <tr>
+                            <td>install development versions</td>
+                            <td><input type="checkbox" id="unstableVersions" name="unstableVersions"></td>
+                        </tr>
                     </tbody>
                 </table>
                 <p style="text-align: center;">
@@ -179,7 +187,7 @@ def handle_root(client):
 
 
 def handle_configure(client, request):
-    match = ure.search("ssid=([^&]*)&password=([^&]*)&mqttServer=([^&]*)&mqttUser=([^&]*)&mqttPassword=([^&]*)&githubRepo=(.*)", request)
+    match = ure.search("ssid=([^&]*)&password=([^&]*)&mqttServer=([^&]*)&mqttUser=([^&]*)&mqttPassword=([^&]*)&githubRepo=([^&]*)(.*)", request)
 
     if match is None:
         send_response(client, "Parameters not found", status_code=400)
@@ -192,10 +200,17 @@ def handle_configure(client, request):
         mqttUser = match.group(4).decode("utf-8").replace("%3F", "?").replace("%21", "!")
         mqttPassword = match.group(5).decode("utf-8").replace("%3F", "?").replace("%21", "!")
         githubRepo = match.group(6).decode("utf-8").replace("%3F", "?").replace("%21", "!").replace("%3A", ":").replace("%2F", "/")
+        rest = match.group(7).decode("utf-8").replace("%3F", "?").replace("%21", "!")
+        autoUpdate = "autoUpdate" in rest
+        unstableVersions = "unstableVersions" in rest
 
         print('mqttServer: ' + mqttServer)
         print('mqttUser: ' + mqttUser)
         print('mqttPassword: ' + mqttPassword)
+        if autoUpdate:
+            print('autoUpdate!')
+        if unstableVersions:
+            print('unstableVersions!')
 
     except Exception:
         ssid = match.group(1).replace("%3F", "?").replace("%21", "!")
@@ -226,7 +241,7 @@ def handle_configure(client, request):
             profiles = {}
         profiles[ssid] = password
         write_profiles(profiles)
-        write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo)
+        write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unstableVersions)
 
         time.sleep(5)
 

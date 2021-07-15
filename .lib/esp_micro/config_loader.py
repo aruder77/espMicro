@@ -20,12 +20,14 @@ def write_profiles(profiles):
         f.write(''.join(lines))
 
 
-def write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo):
+def write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unstableVersions):
     lines = []
     lines.append("mqttServer;%s\n" % mqttServer)
     lines.append("mqttUser;%s\n" % mqttUser)
     lines.append("mqttPassword;%s\n" % mqttPassword)
     lines.append("githubRepo;%s\n" % githubRepo)
+    lines.append("autoUpdate;%r\n" % autoUpdate)
+    lines.append("unstableVersions;%r\n" % unstableVersions)
     with open(MQTT_PROFILE, "w") as f:
         f.write(''.join(lines))
 
@@ -37,4 +39,6 @@ def read_mqtt():
     mqttUser  = lines[1].strip("\n").split(";")[1]
     mqttPassword  = lines[2].strip("\n").split(";")[1]
     githubRepo = lines[3].strip("\n").split(";")[1]
-    return (mqttServer, mqttUser, mqttPassword, githubRepo)   
+    autoUpdate = lines[4].strip("\n").split(";")[1] == "True"
+    unstableVersions = lines[5].strip("\n").split(";")[1] == "True"
+    return (mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unstableVersions)   

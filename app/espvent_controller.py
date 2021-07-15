@@ -1,7 +1,7 @@
-from controller import Controller
+from esp_micro.esp_micro_controller import EspMicroController
 from espvent_device import EspVentDevice
 
-class EspVentController(Controller):
+class EspVentController(EspMicroController):
     def __init__(self):
         super().__init__()
 
