@@ -142,7 +142,7 @@ class MotorNode(HomieNode):
 
     def setCurrentPwmSignal(self, currentPwmSignal: int):
         self.currentPwmSignal = currentPwmSignal
-        print("%s new current pwm: %d\n" % (self.id, self.currentPwmSignal * 4))
+        print("%s new current pwm: %d" % (self.id, self.currentPwmSignal * 4))
         self.pwm.duty(int(self.currentPwmSignal * 4))
 
 
