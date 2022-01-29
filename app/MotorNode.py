@@ -19,7 +19,7 @@ class MotorNode(HomieNode):
 
     def __init__(self, pwmPin: int, pwmChannel: int, inverseDirection: bool):
         super().__init__(id="fan%d" % pwmChannel, name="Fan%d" % pwmChannel, type="Fan")
-        #self.pwm = PWM(Pin(pwmPin), freq=4000)
+        self.pwm = PWM(Pin(pwmPin), freq=4000)
         self.inverseDirection = inverseDirection
 
         self.speedProperty = HomieProperty(
@@ -142,8 +142,8 @@ class MotorNode(HomieNode):
 
     def setCurrentPwmSignal(self, currentPwmSignal: int):
         self.currentPwmSignal = currentPwmSignal
-        #self.getLogger().info("new current pwm: %d" % self.currentPwmSignal)
-        #self.pwm.duty(int(self.currentPwmSignal * 4))
+        print("%s new current pwm: %d\n" % (self.id, self.currentPwmSignal * 4))
+        self.pwm.duty(int(self.currentPwmSignal * 4))
 
 
     def isDirectionForward(self, pwmSignal: int):

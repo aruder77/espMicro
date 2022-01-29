@@ -10,14 +10,14 @@ class EspVentDevice(HomieDevice):
         super().__init__(settings)
 
         motorNodes = [
-            MotorNode(4, 1, False),
+            MotorNode(4, 1, False), #works
             MotorNode(13, 2, True),
             MotorNode(14, 3, False),
             MotorNode(27, 4, True),
             MotorNode(26, 5, False),
-            MotorNode(25, 6, True),
-            MotorNode(33, 7, False),
-            MotorNode(32, 8, True)
+            MotorNode(25, 6, True), #works
+            MotorNode(33, 7, False), #works
+            MotorNode(32, 8, True) #works
         ]
         for motorNode in motorNodes:
             self.add_node(motorNode)
