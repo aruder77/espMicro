@@ -27,7 +27,7 @@ class MotorNode(HomieNode):
             name="speed",
             settable=True,
             datatype=INTEGER,
-            unit="%"
+            unit="%",
             default=50,
             on_message=self.speed_msg,
         )
@@ -67,8 +67,6 @@ class MotorNode(HomieNode):
     def convertToPwmSignal(self, direction: bool, speed: int):
         pwmSpeed = 0
         realDirection = direction
-        if (self.inverseDirection):
-            realDirection = not direction
 
         pwmDiff = speed/100.0 * self.PWM_RANGE
 
@@ -135,7 +133,7 @@ class MotorNode(HomieNode):
         return self.isDirectionForward(self.currentPwmSignal)
 
     def isFlowDirectionIn(self):
-        return self.isCurrentDirection() if self.inverseDirection() else not self.isCurrentDirection()
+        return not self.isCurrentDirection()
 
     def convertToSpeed(self, pwmSignal: int):
         return abs(pwmSignal - 125) / self.PWM_RANGE * 100
@@ -149,7 +147,7 @@ class MotorNode(HomieNode):
 
     def isDirectionForward(self, pwmSignal: int):
         directionForward = pwmSignal < 128
-        return not directionForward if self.inverseDirection else directionForward
+        return directionForward
 
 
 

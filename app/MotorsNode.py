@@ -97,7 +97,7 @@ class MotorsNode(HomieNode):
             #self.getLogger().info("switching direction to %s" % ("out" if direction else "in"))
 
             for motorNode in self.motorNodes:
-                motorNode.setTargetDirection(direction)
+                motorNode.setTargetDirection(not direction if motorNode.isInverseDirection() else direction)
 
     def isDirection(self):
         return self.direction
@@ -110,22 +110,17 @@ class MotorsNode(HomieNode):
 
         if mode == 0 or mode == 1:
             # regular switching mode
-            idx = 0
             for motorNode in self.motorNodes:
-                motorNode.setInverseDirection(idx % 2 != 0)
-                motorNode.setTargetDirection(self.direction)
-                idx += 1
+                motorNode.setTargetDirection(not self.direction if motorNode.isInverseDirection() else self.direction)
 
         elif mode == 2:
             # all in, no inverse direction
             for motorNode in self.motorNodes:
-                motorNode.setInverseDirection(False)
                 motorNode.setTargetDirection(False)
 
         elif mode == 3:
             # manual mode, no inverse direction
             for motorNode in self.motorNodes:
-                motorNode.setInverseDirection(False)
                 motorNode.setTargetDirection(self.direction)
 
 
