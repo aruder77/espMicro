@@ -27,6 +27,7 @@ class MotorNode(HomieNode):
             name="speed",
             settable=True,
             datatype=INTEGER,
+            unit="%"
             default=50,
             on_message=self.speed_msg,
         )
@@ -36,8 +37,8 @@ class MotorNode(HomieNode):
             id="direction",
             name="direction",
             settable=True,
-            datatype=INTEGER,
-            default=30,
+            datatype=BOOLEAN,
+            default=False,
             on_message=self.direction_msg,
         )
         self.add_property(self.directionProperty)

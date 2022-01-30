@@ -25,6 +25,7 @@ class MotorsNode(HomieNode):
             name="speed",
             settable=True,
             datatype=INTEGER,
+            unit="%",
             default=50,
             on_message=self.speed_msg,
         )
@@ -45,6 +46,7 @@ class MotorsNode(HomieNode):
             name="mode",
             settable=True,
             datatype=INTEGER,
+            format="0:3",
             default=0,
             on_message=self.mode_msg,
         )
