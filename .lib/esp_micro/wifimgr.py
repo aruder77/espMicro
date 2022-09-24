@@ -2,6 +2,7 @@ import network
 import socket
 import ure
 import time
+import machine
 from esp_micro.config_loader import read_profiles
 from esp_micro.config_loader import write_profiles
 from esp_micro.config_loader import write_mqtt
@@ -245,6 +246,7 @@ def handle_configure(client, request):
 
         time.sleep(5)
 
+        machine.reset()
         return True
     else:
         response = """\
