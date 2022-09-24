@@ -52,9 +52,8 @@ class MotorNode(HomieNode):
 
     def direction_msg(self, topic, payload, retained):
         #print("direction_msg")
-        #direction = bool(payload)
-        #self.setTargetDirection(direction)
-        pass
+        direction = bool(payload)
+        self.setTargetDirection(direction)
 
     def setStartIndex(self, currentValue: int):
         i = 0

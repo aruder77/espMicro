@@ -61,7 +61,6 @@ class MotorsNode(HomieNode):
     async def garbageCollection(self):
         while True:
             collect()
-            print('Memory free', gc.mem_free())
             await sleep_ms(500)
         
 
