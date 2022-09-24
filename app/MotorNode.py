@@ -51,7 +51,7 @@ class MotorNode(HomieNode):
             self.setTargetSpeed(speed)
 
     def direction_msg(self, topic, payload, retained):
-        #print("direction_msg")
+        print("direction_msg")
         direction = bool(payload)
         self.setTargetDirection(direction)
 

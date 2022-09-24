@@ -55,7 +55,7 @@ class MotorsNode(HomieNode):
         )
         self.add_property(self.modeProperty)       
 
-        asyncio.create_task(self.garbageCollection())
+        #asyncio.create_task(self.garbageCollection())
         asyncio.create_task(self.workerLoop())        
 
     async def garbageCollection(self):
