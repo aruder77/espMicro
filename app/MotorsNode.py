@@ -4,6 +4,9 @@ from homie.node import HomieNode
 from homie.device import await_ready_state
 import uasyncio as asyncio
 from uasyncio import sleep_ms
+from gc import collect
+import gc
+
 
 
 WORKER_DELAY = const(100)
@@ -52,7 +55,14 @@ class MotorsNode(HomieNode):
         )
         self.add_property(self.modeProperty)       
 
-        asyncio.create_task(self.workerLoop())            
+        asyncio.create_task(self.garbageCollection())
+        asyncio.create_task(self.workerLoop())        
+
+    async def garbageCollection(self):
+        while True:
+            collect()
+            print('Memory free', gc.mem_free())
+            await sleep_ms(500)
         
 
     @await_ready_state
