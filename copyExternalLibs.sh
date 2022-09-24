@@ -2,7 +2,7 @@
 
 # copy microhomie
 mkdir .lib/homie/ || echo 'lib/homie already exists'
-cp -r ../microhomie/homie .lib/homie/
+cp -r ../microhomie/homie/* .lib/homie/
 cp -r ../microhomie/lib/primitives .lib/
 cp ../microhomie/lib/mqtt_as.py .lib/
 
