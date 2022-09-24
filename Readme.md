@@ -1,0 +1,18 @@
+- micropython auschecken
+- mit 'copyLibToMicroPython.sh' libs nach micropython/ports/esp32/modules kopieren
+- micropython bauen
+  - in root dir (micropython dir)
+  - docker run --rm -v $PWD:/project -w /project -it espressif/idf:release-v4.4
+    - einmalig:
+      - make -C mpy-cross
+    - cd ports/esp32
+      - make clean
+      - make submodules
+      - make
+- micropython flashen
+  - docker container verlassen
+  - esptool.py -p /dev/tty.usbserial-0001 erase_flash
+  - in micropython/ports/esp32:
+    - esptool.py --chip esp32 --port /dev/tty.usbserial-0001 --baud 460800 write_flash -z 0x1000 build-GENERIC/firmware.bin
+- espMicro repo in VS-Code und pymakr öffnen
+- espMicro auf device syncen (espMicro enthält EspVent im moment)
