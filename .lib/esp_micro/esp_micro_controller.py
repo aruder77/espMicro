@@ -31,6 +31,9 @@ class EspMicroController:
         if autoUpdate:
             update(unstableVersions)
 
+        settings.DEVICE_ID = self.getDeviceID()
+        settings.DEVICE_NAME = self.getDeviceName()
+
         # Homie device setup
         self.homie = self.createHomieDevice(settings)
 
@@ -38,6 +41,11 @@ class EspMicroController:
     def createHomieDevice(self, settings, ssid, password, mqttServer, mqttUser, mqttPassword):
         print('You must override this method and return an EspMicroDevice subclass!')
 
+    def getDeviceName(self):
+        print('You must override this method and return a device name!')
+
+    def getDeviceID(self):
+        print('You must override this method and return a device ID!')
 
     def run(self):
         # run forever

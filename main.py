@@ -5,11 +5,11 @@ import os
 sys.path.append('/app')
 sys.path.append('/app/lib')
 
-from espvent_controller import EspVentController
+from main_controller import MainController
 
 def main():
     # start application controller
-    controller = EspVentController()
+    controller = MainController()
     controller.run()
 
 

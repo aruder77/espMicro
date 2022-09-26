@@ -29,10 +29,10 @@ MQTT_BROKER = ""
 # The device ID for registration at the broker. The device id is also the
 # base topic of a device and must be unique and bytestring.
 # from homie.utils import get_unique_id
-DEVICE_ID = "espVentuPy"
+DEVICE_ID = "espMicro"
 
 # Friendly name of the device as bytestring
-DEVICE_NAME = "espVentuPy"
+DEVICE_NAME = "espMicro"
 
 # Time in seconds the device updates device properties
 # DEVICE_STATS_INTERVAL = 60
