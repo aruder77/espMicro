@@ -1,5 +1,11 @@
-from network import WLAN, AP_IF, STA_IF
-from ubinascii import hexlify
+from sys import platform
+
+LINUX = platform == 'linux'
+
+
+if LINUX is False:
+    from network import WLAN, AP_IF, STA_IF
+    from ubinascii import hexlify
 
 
 def enable_ap():

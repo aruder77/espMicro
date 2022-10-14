@@ -1,13 +1,17 @@
+from plistlib import PlistFormat
 import network
 import socket
 import ure
 import time
 import machine
+from sys import platform
 from esp_micro.config_loader import read_profiles
 from esp_micro.config_loader import write_profiles
 from esp_micro.config_loader import write_mqtt
 
 NETWORK_PROFILES = 'wifi.dat'
+
+RP2 = platform == 'rp2'
 
 ap_ssid = "WifiManager"
 ap_password = "tayfunulu"
@@ -298,8 +302,11 @@ def start(port=80):
 
     stop()
 
-    # , authmode=ap_authmode)
-    wlan_ap.config(essid=ap_ssid, password=ap_password)
+    if RP2:
+        wlan_ap.config(essid=ap_ssid, password=ap_password)
+    else:
+        wlan_ap.config(essid=ap_ssid, password=ap_password,
+                       authmode=ap_authmode)
 
     wlan_sta.active(True)
     wlan_ap.active(True)

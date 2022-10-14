@@ -33,10 +33,17 @@ from utime import time
 from primitives import launch
 from primitives.message import Message
 
+LINUX = platform == 'linux'
+
 
 def get_unique_id():
-    from machine import unique_id
-    return hexlify(unique_id()).decode()
+    if LINUX is False:
+        from machine import unique_id
+        return hexlify(unique_id()).decode()
+    else:
+        raise NotImplementedError(
+            "Linux doesn't have a unique id. Provide the DEVICE_ID option in your settings.py."
+        )
 
 
 # Decorator to block async tasks until the device is in "ready" state
