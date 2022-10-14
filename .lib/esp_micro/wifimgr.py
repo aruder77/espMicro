@@ -41,11 +41,13 @@ def get_connection():
         wlan_sta.active(True)
         networks = wlan_sta.scan()
 
-        AUTHMODE = {0: "open", 1: "WEP", 2: "WPA-PSK", 3: "WPA2-PSK", 4: "WPA/WPA2-PSK"}
+        AUTHMODE = {0: "open", 1: "WEP", 2: "WPA-PSK",
+                    3: "WPA2-PSK", 4: "WPA/WPA2-PSK"}
         for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
             ssid = ssid.decode('utf-8')
             encrypted = authmode > 0
-            print("ssid: %s chan: %d rssi: %d authmode: %s" % (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
+            print("ssid: %s chan: %d rssi: %d authmode: %s" %
+                  (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
             if encrypted:
                 if ssid in profiles:
                     password = profiles[ssid]
@@ -84,11 +86,11 @@ def do_connect(ssid, password):
     return connected
 
 
-def send_header(client, status_code=200, content_length=None ):
+def send_header(client, status_code=200, content_length=None):
     client.sendall("HTTP/1.0 {} OK\r\n".format(status_code))
     client.sendall("Content-Type: text/html\r\n")
     if content_length is not None:
-      client.sendall("Content-Length: {}\r\n".format(content_length))
+        client.sendall("Content-Length: {}\r\n".format(content_length))
     client.sendall("\r\n")
 
 
@@ -188,20 +190,28 @@ def handle_root(client):
 
 
 def handle_configure(client, request):
-    match = ure.search("ssid=([^&]*)&password=([^&]*)&mqttServer=([^&]*)&mqttUser=([^&]*)&mqttPassword=([^&]*)&githubRepo=([^&]*)(.*)", request)
+    match = ure.search(
+        "ssid=([^&]*)&password=([^&]*)&mqttServer=([^&]*)&mqttUser=([^&]*)&mqttPassword=([^&]*)&githubRepo=([^&]*)(.*)", request)
 
     if match is None:
         send_response(client, "Parameters not found", status_code=400)
         return False
     # version 1.9 compatibility
     try:
-        ssid = match.group(1).decode("utf-8").replace("%3F", "?").replace("%21", "!")
-        password = match.group(2).decode("utf-8").replace("%3F", "?").replace("%21", "!")
-        mqttServer = match.group(3).decode("utf-8").replace("%3F", "?").replace("%21", "!")
-        mqttUser = match.group(4).decode("utf-8").replace("%3F", "?").replace("%21", "!")
-        mqttPassword = match.group(5).decode("utf-8").replace("%3F", "?").replace("%21", "!")
-        githubRepo = match.group(6).decode("utf-8").replace("%3F", "?").replace("%21", "!").replace("%3A", ":").replace("%2F", "/")
-        rest = match.group(7).decode("utf-8").replace("%3F", "?").replace("%21", "!")
+        ssid = match.group(1).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!")
+        password = match.group(2).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!")
+        mqttServer = match.group(3).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!")
+        mqttUser = match.group(4).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!")
+        mqttPassword = match.group(5).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!")
+        githubRepo = match.group(6).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!").replace("%3A", ":").replace("%2F", "/")
+        rest = match.group(7).decode(
+            "utf-8").replace("%3F", "?").replace("%21", "!")
         autoUpdate = "autoUpdate" in rest
         unstableVersions = "unstableVersions" in rest
 
@@ -242,7 +252,8 @@ def handle_configure(client, request):
             profiles = {}
         profiles[ssid] = password
         write_profiles(profiles)
-        write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unstableVersions)
+        write_mqtt(mqttServer, mqttUser, mqttPassword,
+                   githubRepo, autoUpdate, unstableVersions)
 
         time.sleep(5)
 
@@ -287,16 +298,18 @@ def start(port=80):
 
     stop()
 
+    # , authmode=ap_authmode)
+    wlan_ap.config(essid=ap_ssid, password=ap_password)
+
     wlan_sta.active(True)
     wlan_ap.active(True)
-
-    wlan_ap.config(essid=ap_ssid, password=ap_password, authmode=ap_authmode)
 
     server_socket = socket.socket()
     server_socket.bind(addr)
     server_socket.listen(1)
 
-    print('Connect to WiFi ssid ' + ap_ssid + ', default password: ' + ap_password)
+    print('Connect to WiFi ssid ' + ap_ssid +
+          ', default password: ' + ap_password)
     print('and access the ESP via your favorite web browser at 192.168.4.1.')
     print('Listening on:', addr)
 
@@ -322,9 +335,11 @@ def start(port=80):
 
             # version 1.9 compatibility
             try:
-                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).decode("utf-8").rstrip("/")
+                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP",
+                                 request).group(1).decode("utf-8").rstrip("/")
             except Exception:
-                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
+                url = ure.search(
+                    "(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
             print("URL is {}".format(url))
 
             if url == "":

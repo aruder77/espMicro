@@ -1,9 +1,5 @@
-from mqtt_as import LINUX
-
-
-if LINUX is False:
-    from network import WLAN, AP_IF, STA_IF
-    from ubinascii import hexlify
+from network import WLAN, AP_IF, STA_IF
+from ubinascii import hexlify
 
 
 def enable_ap():
