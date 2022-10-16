@@ -1,4 +1,3 @@
-from plistlib import PlistFormat
 import network
 import socket
 import ure
@@ -28,6 +27,7 @@ def get_connection():
 
     # First check if there already is any connection:
     if wlan_sta.isconnected():
+        print('...connected already.')
         return wlan_sta
 
     connected = False
@@ -236,6 +236,13 @@ def handle_configure(client, request):
         return False
 
     if do_connect(ssid, password):
+        try:
+            profiles = read_profiles()
+        except OSError:
+            profiles = {}
+        profiles[ssid] = password
+        write_profiles(profiles)
+
         response = """\
             <html>
                 <center>
@@ -249,13 +256,8 @@ def handle_configure(client, request):
                 </center>
             </html>
         """ % dict(ssid=ssid)
+        print('Responding to client...')
         send_response(client, response)
-        try:
-            profiles = read_profiles()
-        except OSError:
-            profiles = {}
-        profiles[ssid] = password
-        write_profiles(profiles)
         write_mqtt(mqttServer, mqttUser, mqttPassword,
                    githubRepo, autoUpdate, unstableVersions)
 

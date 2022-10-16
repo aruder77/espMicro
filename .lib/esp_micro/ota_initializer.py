@@ -26,6 +26,7 @@ def connectToWifi():
     if 'configMode' in os.listdir('/'):
         os.remove('configMode')
         esp_micro.wifimgr.start()
+    print('Connecting to WiFi...')
     wlan = esp_micro.wifimgr.get_connection()
     if wlan is None:
         print("Could not initialize the network connection.")

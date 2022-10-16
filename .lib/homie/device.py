@@ -34,6 +34,7 @@ from primitives import launch
 from primitives.message import Message
 
 LINUX = platform == 'linux'
+RP2 = platform == 'rp2'
 
 
 def get_unique_id():
@@ -106,7 +107,6 @@ class HomieDevice:
         config['will'] = ("{}/{}".format(self.dtopic,
                           DEVICE_STATE), "lost", True, QOS)
         config['subs_cb'] = self.subs_cb
-        config['wifi_coro'] = None
         config['connect_coro'] = self.connection_handler
         config['ssid'] = getattr(settings, "WIFI_SSID", None)
         config['wifi_pw'] = getattr(settings, "WIFI_PASSWORD", None)
@@ -302,13 +302,13 @@ class HomieDevice:
                 await sleep_ms(5000)
 
     def run_forever(self):
-        if RTC().memory() == b"webrepl":
+        if not RP2 and RTC().memory() == b"webrepl":
             RTC().memory(b"")
         else:
             asyncio.run(self.run())
 
     async def reset(self, reason):
-        if reason != "reset":
+        if reason != "reset" and RP2:
             RTC().memory(reason)
         await self.publish("{}/{}".format(self.dtopic, DEVICE_STATE), reason)
         await self.mqtt.disconnect()
