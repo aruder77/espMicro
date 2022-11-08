@@ -4,16 +4,17 @@ from homie.property import HomieProperty
 from utime import time
 from homie.constants import FALSE, TRUE, BOOLEAN
 from machine import Pin
+from sys import platform
 
 
 class SampleDevice(HomieDevice):
 
-    # Reversed values for the esp8266 boards onboard led
-    ONOFF = {FALSE: 1, TRUE: 0}
+    ONOFF = {FALSE: 0, TRUE: 1}
+    LED_PIN = 2 if platform == "esp32" else "LED"
 
     def __init__(self, settings):
         super().__init__(settings)
-        self.led = Pin("LED", Pin.OUT, value=1)
+        self.led = Pin(LED_PIN, Pin.OUT, value=1)
 
         # Initialize the Homie node for the onboard LED
         led_node = HomieNode(id="led", name="Onboard LED", type="LED",)
