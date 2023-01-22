@@ -14,7 +14,7 @@ class SampleDevice(HomieDevice):
 
     def __init__(self, settings):
         super().__init__(settings)
-        self.led = Pin(LED_PIN, Pin.OUT, value=1)
+        self.led = Pin(self.LED_PIN, Pin.OUT, value=1)
 
         # Initialize the Homie node for the onboard LED
         led_node = HomieNode(id="led", name="Onboard LED", type="LED",)

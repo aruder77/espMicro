@@ -47,6 +47,8 @@ After install config mode is automatically entered. You can enter config mode by
 
 - expose release-version as property
 - manually trigger remote-update
+- abstract device specific behavior for esp32,rp2 pico, arduino nano connect
+- logging to file/console
 - remember config values in config mode
 
 # Unsorted

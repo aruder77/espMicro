@@ -224,6 +224,12 @@ class HomieDevice:
         if isinstance(payload, str):
             payload = payload.encode()
 
+        if isinstance(payload, float):
+            payload = str(payload).encode()
+
+        if isinstance(payload, bool):
+            payload = str(payload).encode()
+
         self.dprint("MQTT PUBLISH: {} --> {}".format(topic, payload))
         await self.mqtt.publish(topic, payload, retain, QOS)
 
