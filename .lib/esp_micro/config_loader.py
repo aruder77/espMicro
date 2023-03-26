@@ -1,6 +1,12 @@
+import os
 
 NETWORK_PROFILES = 'wifi.dat'
 MQTT_PROFILE = 'mqtt.dat'
+
+
+def configured() -> bool:
+    return NETWORK_PROFILES in os.listdir()
+
 
 def read_profiles():
     with open(NETWORK_PROFILES) as f:
@@ -35,10 +41,10 @@ def write_mqtt(mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unsta
 def read_mqtt():
     with open(MQTT_PROFILE) as f:
         lines = f.readlines()
-    mqttServer  = lines[0].strip("\n").split(";")[1]
-    mqttUser  = lines[1].strip("\n").split(";")[1]
-    mqttPassword  = lines[2].strip("\n").split(";")[1]
+    mqttServer = lines[0].strip("\n").split(";")[1]
+    mqttUser = lines[1].strip("\n").split(";")[1]
+    mqttPassword = lines[2].strip("\n").split(";")[1]
     githubRepo = lines[3].strip("\n").split(";")[1]
     autoUpdate = lines[4].strip("\n").split(";")[1] == "True"
     unstableVersions = lines[5].strip("\n").split(";")[1] == "True"
-    return (mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unstableVersions)   
+    return (mqttServer, mqttUser, mqttPassword, githubRepo, autoUpdate, unstableVersions)

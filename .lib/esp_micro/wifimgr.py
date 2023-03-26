@@ -74,6 +74,7 @@ def get_connection():
 def do_connect(ssid, password):
     wlan_sta.active(True)
     if wlan_sta.isconnected():
+        print("...already connected")
         return None
     print('Trying to connect to %s(%s)...' % (ssid, password))
     wlan_sta.connect(ssid, password)
