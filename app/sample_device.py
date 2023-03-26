@@ -1,3 +1,4 @@
+from esp_micro import singletons
 from homie.device import HomieDevice, await_ready_state
 from homie.node import HomieNode
 from homie.property import HomieProperty
@@ -5,16 +6,17 @@ from utime import time
 from homie.constants import FALSE, TRUE, BOOLEAN
 from machine import Pin
 from sys import platform
+from esp_micro.esp_micro_controller import controller
+import esp_micro.singletons
 
 
 class SampleDevice(HomieDevice):
 
     ONOFF = {FALSE: 0, TRUE: 1}
-    LED_PIN = 2 if platform == "esp32" else "LED"
 
     def __init__(self, settings):
         super().__init__(settings)
-        self.led = Pin(self.LED_PIN, Pin.OUT, value=1)
+        self.led = Pin(singletons.microcontrollerConfig.getLedPin(), Pin.OUT, value=1)
 
         # Initialize the Homie node for the onboard LED
         led_node = HomieNode(id="led", name="Onboard LED", type="LED",)

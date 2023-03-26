@@ -19,7 +19,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+.lib/
 lib64/
 parts/
 sdist/
@@ -144,6 +144,7 @@ dmypy.json
 ### Micropy Cli ###
 .micropy/
 !micropy.json
-!src/lib
+!.lib
 
 .idea
+bootstrap/*.dat

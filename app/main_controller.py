@@ -1,15 +1,17 @@
 from esp_micro.esp_micro_controller import EspMicroController
 from sample_device import SampleDevice
 
+
 class MainController(EspMicroController):
+
     def __init__(self):
         super().__init__()
 
-    def createHomieDevice(self, settings):
+    def create_homie_device(self, settings):
         return SampleDevice(settings)
 
-    def getDeviceName(self):
+    def get_device_name(self):
         return 'sampleDevice'
 
-    def getDeviceID(self):
+    def get_device_id(self):
         return 'sampleDevice'

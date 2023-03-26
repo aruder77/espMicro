@@ -1,6 +1,9 @@
 # Debug mode disables WDT, print mqtt messages
 DEBUG = True
 
+# supported boards: PICO_W, ARDUINO_NANO_RP2040_CONNECT
+BOARD = "ARDUINO_NANO_RP2040_CONNECT"
+
 ###
 # MQTT settings
 ###
