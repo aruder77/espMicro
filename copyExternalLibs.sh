@@ -17,5 +17,5 @@ cp ../micropython-ota-updater/app/httpclient.py .lib/ota_updater/
 cp ../micropython-ili9341/ili9341.py .lib/
 cp ../micropython-ili9341/xglcd_font.py .lib/
 
-# copy ulogger
+# copy logging
 cp -r ../micropython-ulogger/ulogger .lib/

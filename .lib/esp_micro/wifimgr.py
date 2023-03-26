@@ -7,6 +7,7 @@ from sys import platform
 from esp_micro.config_loader import read_profiles
 from esp_micro.config_loader import write_profiles
 from esp_micro.config_loader import write_mqtt
+from esp_micro.logutil import get_logger
 
 NETWORK_PROFILES = 'wifi.dat'
 
@@ -21,13 +22,14 @@ wlan_sta = network.WLAN(network.STA_IF)
 
 server_socket = None
 
+logger = get_logger()
 
 def get_connection():
     """return a working WLAN(STA_IF) instance or None"""
 
     # First check if there already is any connection:
     if wlan_sta.isconnected():
-        print('...connected already.')
+        logger.info('...connected already.')
         return wlan_sta
 
     connected = False
@@ -50,19 +52,19 @@ def get_connection():
         for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
             ssid = ssid.decode('utf-8')
             encrypted = authmode > 0
-            print("ssid: %s chan: %d rssi: %d authmode: %s" %
+            logger.info("ssid: %s chan: %d rssi: %d authmode: %s" %
                   (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
             if encrypted:
                 if ssid in profiles:
                     password = profiles[ssid]
                     connected = do_connect(ssid, password)
                 else:
-                    print("skipping unknown encrypted network")
+                    logger.info("skipping unknown encrypted network")
             if connected:
                 break
 
     except OSError as e:
-        print("exception", str(e))
+        logger.error("exception", str(e))
 
     # start web server for connection manager:
     if not connected:
@@ -75,7 +77,7 @@ def do_connect(ssid, password):
     wlan_sta.active(True)
     if wlan_sta.isconnected():
         return None
-    print('Trying to connect to %s(%s)...' % (ssid, password))
+    logger.info('Trying to connect to %s(%s)...' % (ssid, password))
     wlan_sta.connect(ssid, password)
     for retry in range(100):
         connected = wlan_sta.isconnected()
@@ -84,9 +86,9 @@ def do_connect(ssid, password):
         time.sleep(0.1)
         print('.', end='')
     if connected:
-        print('\nConnected. Network config: ', wlan_sta.ifconfig())
+        logger.info('Connected. Network config: %s', wlan_sta.ifconfig())
     else:
-        print('\nFailed. Not Connected to: ' + ssid)
+        logger.info('Failed. Not Connected to: %s', ssid)
     return connected
 
 
@@ -219,13 +221,13 @@ def handle_configure(client, request):
         autoUpdate = "autoUpdate" in rest
         unstableVersions = "unstableVersions" in rest
 
-        print('mqttServer: ' + mqttServer)
-        print('mqttUser: ' + mqttUser)
-        print('mqttPassword: ' + mqttPassword)
+        logger.info('mqttServer: ' + mqttServer)
+        logger.info('mqttUser: ' + mqttUser)
+        logger.info('mqttPassword: ' + mqttPassword)
         if autoUpdate:
-            print('autoUpdate!')
+            logger.info('autoUpdate!')
         if unstableVersions:
-            print('unstableVersions!')
+            logger.info('unstableVersions!')
 
     except Exception:
         ssid = match.group(1).replace("%3F", "?").replace("%21", "!")
@@ -256,7 +258,7 @@ def handle_configure(client, request):
                 </center>
             </html>
         """ % dict(ssid=ssid)
-        print('Responding to client...')
+        logger.info('Responding to client...')
         send_response(client, response)
         write_mqtt(mqttServer, mqttUser, mqttPassword,
                    githubRepo, autoUpdate, unstableVersions)
@@ -317,17 +319,17 @@ def start(port=80):
     server_socket.bind(addr)
     server_socket.listen(1)
 
-    print('Connect to WiFi ssid ' + ap_ssid +
+    logger.info('Connect to WiFi ssid ' + ap_ssid +
           ', default password: ' + ap_password)
-    print('and access the ESP via your favorite web browser at 192.168.4.1.')
-    print('Listening on:', addr)
+    logger.info('and access the ESP via your favorite web browser at 192.168.4.1.')
+    logger.info('Listening on:', addr)
 
     while True:
         if wlan_sta.isconnected():
             return True
 
         client, addr = server_socket.accept()
-        print('client connected from', addr)
+        logger.info('client connected from', addr)
         try:
             client.settimeout(5.0)
 
@@ -338,7 +340,7 @@ def start(port=80):
             except OSError:
                 pass
 
-            print("Request is: {}".format(request))
+            logger.info("Request is: {}".format(request))
             if "HTTP" not in request:  # skip invalid requests
                 continue
 
@@ -349,7 +351,7 @@ def start(port=80):
             except Exception:
                 url = ure.search(
                     "(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
-            print("URL is {}".format(url))
+            logger.info("URL is {}".format(url))
 
             if url == "":
                 handle_root(client)

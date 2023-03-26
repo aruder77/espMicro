@@ -46,6 +46,9 @@ class OTAUpdater:
 
         return False
 
+    def install_version_after_boot(self, version):
+        self._create_new_version_file(version)
+
     def install_update_if_available_after_boot(self, ssid, password) -> bool:
         """This method will install the latest version if out-of-date after boot.
 

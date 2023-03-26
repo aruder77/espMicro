@@ -1,44 +1,30 @@
-# logutil.py
-import ulogger
+import logging
 
-from machine import RTC
-import ntptime
+# Create logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
+# Create console handler and set level to debug
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
 
-class Clock(ulogger.BaseClock):
-    def __init__(self):
-        self.rtc = RTC()
-        ntptime.host = "ntp.ntsc.ac.cn"
-        ntptime.settime()
+# Create file handler and set level to error
+file_handler = logging.FileHandler("error.log", mode="w")
+file_handler.setLevel(logging.ERROR)
 
-    def __call__(self) -> str:
-        y, m, d, _, h, mi, s, _ = self.rtc.datetime()
-        return '%d-%d-%d %d:%d:%d' % (y, m, d, h, mi, s)
+# Create a formatter
+formatter = logging.Formatter("%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s")
 
+# Add formatter to the handlers
+stream_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
 
-clock = Clock()
+# Add handlers to logger
+logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
 
-handlers = (
-    ulogger.Handler(
-        level=ulogger.INFO,
-        colorful=True,
-        fmt="&(time)% - &(level)% - &(name)% - &(fnname)% - &(msg)%",
-        clock=clock,
-        direction=ulogger.TO_TERM,
-    ),
-    ulogger.Handler(
-        level=ulogger.ERROR,
-        fmt="&(time)% - &(level)% - &(name)% - &(fnname)% - &(msg)%",
-        clock=clock,
-        direction=ulogger.TO_FILE,
-        file_name="logging.log",
-        max_file_size=1024  # max for 1k
-    )
-)
-
-
-def get_logger(name: str):
-    return ulogger.Logger(name, handlers)
+def get_logger():
+    return logger
 
 
 all = (get_logger)

@@ -535,7 +535,8 @@ class MQTTClient(MQTT_base):
             if RP2:  # Disable auto-sleep. 
                 # https://datasheets.raspberrypi.com/picow/connecting-to-the-internet-with-pico-w.pdf
                 # para 3.6.3
-                s.config(pm = 0xa11140)
+                #s.config(pm = 0xa11140)
+                pass
             s.connect(self._ssid, self._wifi_pw)
             for _ in range(60):  # Break out on fail or success. Check once per sec.
                 await asyncio.sleep(1)
