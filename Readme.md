@@ -78,3 +78,9 @@ After install config mode is automatically entered. You can enter config mode by
   - docker run --rm -it -v `pwd`:/builds -u `id -u`:`id -g` gcc-arm-none-eabi:latest /bin/bash
   - cd ports/rp2 statt ports/esp32
   - gebaute firmware aus ports/rp2/build-xxx/firmware.uf auf gerät installieren
+
+# Development mode firmware
+
+- flash vanilla micropython to device
+- rename .lib to lib
+- 

@@ -6,6 +6,7 @@ import machine
 from sys import platform
 
 from esp_micro import singletons
+from esp_micro.wifimgr import get_connection, do_connect
 from homie.device import HomieDevice
 from homie.node import HomieNode
 from homie.property import HomieProperty
@@ -15,6 +16,7 @@ from esp_micro.logutil import get_logger
 from esp_micro.ota_initializer import OtaInitializer, connectToWifi
 from esp_micro.config_loader import read_profiles
 from esp_micro.config_loader import read_mqtt
+from esp_micro.config_loader import configured
 from esp_micro.micro_controller_config import MicrocontrollerConfig, RP2PicoConfig, Esp32Config, \
     ArduinoNanoConnectConfig
 
