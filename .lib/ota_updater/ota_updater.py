@@ -130,11 +130,15 @@ class OTAUpdater:
         return '0.0'
 
     def get_latest_version(self):
-        latest_release = self.http_client.get(
-            'https://api.github.com/repos/{}/releases'.format(self.github_repo))
-        version = [x['tag_name'] for x in latest_release.json() if (x['tag_name'].startswith(
-            'v') and self.unstableVersions) or x['tag_name'].startswith('r')][0]
-        latest_release.close()
+        try:
+            latest_release = self.http_client.get(
+                'https://api.github.com/repos/{}/releases'.format(self.github_repo))
+            version = [x['tag_name'] for x in latest_release.json() if (x['tag_name'].startswith(
+                'v') and self.unstableVersions) or x['tag_name'].startswith('r')][0]
+            latest_release.close()
+        except OSError:
+            print('Failed to determine latest version! Skipping update...')
+            return '0.0'
         return version
 
     def _download_new_version(self, version):
