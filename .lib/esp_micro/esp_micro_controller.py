@@ -6,6 +6,7 @@ import machine
 from sys import platform
 
 from esp_micro import singletons
+from esp_micro.display_controller import DisplayController
 from esp_micro.wifimgr import get_connection, do_connect
 from homie.device import HomieDevice
 from homie.node import HomieNode
@@ -26,6 +27,7 @@ class EspMicroController:
     def __init__(self):
 
         singletons.microcontrollerConfig = self.create_microcontroller_config()
+        singletons.displayController = DisplayController()
 
         # setup logger
         self.logger = get_logger()
