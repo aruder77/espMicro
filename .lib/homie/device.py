@@ -3,6 +3,7 @@ import uasyncio as asyncio
 from gc import collect, mem_free
 from sys import platform
 
+from esp_micro import singletons
 from homie import __version__
 from homie.network import get_local_ip, get_local_mac
 from homie.constants import (
@@ -107,6 +108,7 @@ class HomieDevice:
         config['will'] = ("{}/{}".format(self.dtopic,
                           DEVICE_STATE), "lost", True, QOS)
         config['subs_cb'] = self.subs_cb
+        config['wifi_coro'] = self.wifi_handler
         config['connect_coro'] = self.connection_handler
         config['ssid'] = getattr(settings, "WIFI_SSID", None)
         config['wifi_pw'] = getattr(settings, "WIFI_PASSWORD", None)
@@ -139,9 +141,16 @@ class HomieDevice:
         self.dprint("MQTT UNSUBSCRIBE: {}".format(topic))
         await self.mqtt.unsubscribe(topic)
 
+    async def wifi_handler(self, connected: bool):
+        singletons.displayController.setWlanConnected(connected)
+        if connected is not True:
+            singletons.displayController.setMqttConnected(False)
+
+
     async def connection_handler(self, client):
         """subscribe to all registered device and node topics"""
         self.dprint("CONNECTION_HANDLER!")
+        singletons.displayController.setMqttConnected(True)
 
         if not self.first_start:
             await self.publish("{}/{}".format(self.dtopic, DEVICE_STATE), STATE_RECOVER)

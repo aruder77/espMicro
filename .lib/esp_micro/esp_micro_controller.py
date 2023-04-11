@@ -9,6 +9,7 @@ from esp_micro import singletons
 from esp_micro.display_controller import DisplayController
 from esp_micro.wifimgr import get_connection, do_connect
 from homie.device import HomieDevice
+from homie.network import get_local_ip
 from homie.node import HomieNode
 from homie.property import HomieProperty
 from homie.constants import STRING
@@ -47,12 +48,17 @@ class EspMicroController:
         settings.WIFI_SSID = list(profiles.keys())[0]
         settings.WIFI_PASSWORD = profiles[settings.WIFI_SSID]
         connected = do_connect(settings.WIFI_SSID, settings.WIFI_PASSWORD)
+        singletons.displayController.setWlanConnected(connected is not False)
 
         # read mqtt data
         (settings.MQTT_BROKER, settings.MQTT_USER, settings.MQTT_PASSWORD, githubRepo, autoUpdate,
          unstableVersions) = read_mqtt()
+        self.otaInitializer = OtaInitializer(autoUpdate, unstableVersions)
+        singletons.displayController.setVersion(self.otaInitializer.get_version())
+        singletons.displayController.setAutoUpdate(autoUpdate)
+        singletons.displayController.setIPAddress(get_local_ip().decode("utf-8"))
+
         if (connected is not False):
-            self.otaInitializer = OtaInitializer(autoUpdate, unstableVersions)
             self.otaInitializer.update()
 
         settings.DEVICE_ID = self.get_device_id()
