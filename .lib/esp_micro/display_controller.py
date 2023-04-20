@@ -7,6 +7,7 @@ from homie.device import await_ready_state
 from ili9341 import Display, color565
 from xglcd_font import XglcdFont
 from xpt2046 import Touch
+from esp_micro import singletons
 
 YELLOW = const(0XFFE0)  # (255, 255, 0)
 WHITE = const(0XFFFF)  # (255, 255, 255)
@@ -24,13 +25,17 @@ class DisplayController:
         self.logger = get_logger()
         self.logger.info("initializing display...")
 
-        dispCS = Pin(17, Pin.OUT)  # display shares spi
-        dispCS.value(1)
-        led = Pin(12, Pin.OUT)
+        dispCS = Pin(singletons.microcontrollerConfig.getDisplayCSPin(), Pin.OUT)  # display shares spi
+        led = Pin(singletons.microcontrollerConfig.getDisplayLedPin(), Pin.OUT)
         led.value(1)
 
-        spi = SPI(0, baudrate=10000000, sck=Pin(18), mosi=Pin(19), miso=Pin(16))
-        self.d = Display(spi, cs=dispCS, dc=Pin(21), rst=Pin(20))
+        sckPin = singletons.microcontrollerConfig.getSCKPin()
+        mosiPin = singletons.microcontrollerConfig.getMOSIPin()
+        misoPin = singletons.microcontrollerConfig.getMISOPin()
+        dcPin = singletons.microcontrollerConfig.getDisplayDCPin()
+        resetPin = singletons.microcontrollerConfig.getDisplayResetPin()
+        spi = SPI(singletons.microcontrollerConfig.getSpi(), baudrate=10000000, sck=Pin(sckPin), mosi=Pin(mosiPin), miso=Pin(misoPin))
+        self.d = Display(spi, cs=dispCS, dc=Pin(dcPin), rst=Pin(resetPin))
         self.font = XglcdFont('fonts/FixedFont5x8.c', 5, 8)
 
         sleep(1)

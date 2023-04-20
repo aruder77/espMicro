@@ -19,7 +19,7 @@ from esp_micro.ota_initializer import OtaInitializer, connectToWifi
 from esp_micro.config_loader import read_profiles
 from esp_micro.config_loader import read_mqtt
 from esp_micro.config_loader import configured
-from esp_micro.micro_controller_config import MicrocontrollerConfig, RP2PicoConfig, Esp32Config, \
+from esp_micro.micro_controller_config import MicrocontrollerConfig, RP2PicoConfig, Esp32NodeMcuConfig, Esp32WroverKitConfig, \
     ArduinoNanoConnectConfig
 
 
@@ -67,7 +67,7 @@ class EspMicroController:
         # Homie device setup
         self.homie = self.create_homie_device(settings)
 
-    def create_homie_device(self, settings, ssid, password, mqttServer, mqttUser, mqttPassword) -> HomieDevice:
+    def create_homie_device(self, settings) -> HomieDevice:
         print('You must override this method and return an EspMicroDevice subclass!')
 
     def get_device_name(self):
@@ -78,7 +78,10 @@ class EspMicroController:
 
     def create_microcontroller_config(self) -> MicrocontrollerConfig:
         if platform == "esp32":
-            return Esp32Config()
+            if settings.BOARD == "NodeMCU":
+                return Esp32NodeMcuConfig()
+            else:
+                return Esp32WroverKitConfig()
         else:
             if settings.BOARD == "ARDUINO_NANO_RP2040_CONNECT":
                 return ArduinoNanoConnectConfig()
