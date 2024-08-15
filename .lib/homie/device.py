@@ -93,14 +93,21 @@ class HomieDevice:
         self.dtopic = "{}/{}".format(self.btopic, self.device_id)
 
         config['client_id'] = self.device_id
+        self.dprint("DEVICE CLIENT: {}".format(config['client_id']))
         config['server'] = settings.MQTT_BROKER
+        self.dprint("DEVICE SERVER: {}".format(config['server']))
         config['port'] = getattr(settings, "MQTT_PORT", 1883)
+        self.dprint("DEVICE PORT: {}".format(config['port']))
         config['user'] = getattr(settings, "MQTT_USERNAME", None)
+        self.dprint("DEVICE USER: {}".format(config['user']))
         config['password'] = getattr(settings, "MQTT_PASSWORD", None)
+        self.dprint("DEVICE PASSWORD: {}".format(config['password']))
         config['keepalive'] = getattr(settings, "MQTT_KEEPALIVE", 30)
         config['ping_interval'] = getattr(settings, "MQTT_PING_INTERVAL", 0)
         config['ssl'] = getattr(settings, "MQTT_SSL", False)
+        self.dprint("DEVICE SSL: {}".format(config['ssl']))
         config['ssl_params'] = getattr(settings, "MQTT_SSL_PARAMS", {})
+        self.dprint("DEVICE SSL_PARAMS: {}".format(config['ssl_params']))
         config['response_time'] = getattr(settings, "MQTT_RESPONSE_TIME", 10)
         config['clean_init'] = getattr(settings, "MQTT_CLEAN_INIT", True)
         config['clean'] = getattr(settings, "MQTT_CLEAN", True)
