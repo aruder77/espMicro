@@ -5,7 +5,7 @@ import os
 import esp_micro.esp_micro_controller as esp_micro_controller
 
 sys.path.append('/app')
-sys.path.append('/app/.lib')
+sys.path.append('/app/lib')
 
 from main_controller import MainController
 
