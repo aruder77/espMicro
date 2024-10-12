@@ -59,7 +59,6 @@ class EspMicroController:
          unstableVersions) = read_mqtt()
         self.logger.info("mqtt settings: {} {} {} Tls:{}".format(settings.MQTT_BROKER, settings.MQTT_USERNAME, settings.MQTT_PASSWORD, settings.MQTT_SSL))
         self.otaInitializer = OtaInitializer(autoUpdate, unstableVersions)
-        singletons.displayController.setVersion(self.otaInitializer.get_version())
         singletons.displayController.setAutoUpdate(autoUpdate)
         singletons.displayController.setIPAddress(get_local_ip().decode("utf-8"))
 

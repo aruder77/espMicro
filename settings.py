@@ -13,8 +13,8 @@ BOARD = "PICO_W"
 
 # SSL connection to the broker. Some MicroPython implementations currently
 # have problems with receiving mqtt messages over ssl connections.
-MQTT_SSL = False
-MQTT_PORT = 1883
+MQTT_SSL = True
+MQTT_PORT = 8883
 # MQTT_SSL_PARAMS = {"server_hostname": "openhab"}
 # MQTT_SSL_PARAMS = {"do_handshake": True}
 

@@ -1,6 +1,8 @@
 import os
 import gc
 
+from esp_micro import singletons
+
 from esp_micro.logutil import get_logger
 from .httpclient import HttpClient
 
@@ -111,6 +113,7 @@ class OTAUpdater:
 
     def _check_for_new_version(self):
         current_version = self.get_version(self.modulepath(self.main_dir))
+        singletons.displayController.setVersion(current_version)
         latest_version = self.get_latest_version()
 
         _logger.info('Checking version... ')
