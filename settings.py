@@ -2,7 +2,7 @@
 DEBUG = True
 
 # supported boards: PICO_W, ARDUINO_NANO_RP2040_CONNECT
-BOARD = "ARDUINO_NANO_RP2040_CONNECT"
+BOARD = "PICO_W"
 
 ###
 # MQTT settings
@@ -13,15 +13,16 @@ BOARD = "ARDUINO_NANO_RP2040_CONNECT"
 
 # SSL connection to the broker. Some MicroPython implementations currently
 # have problems with receiving mqtt messages over ssl connections.
-# MQTT_SSL = False
-# MQTT_SSL_PARAMS = {}
+MQTT_SSL = False
+MQTT_PORT = 1883
+# MQTT_SSL_PARAMS = {"server_hostname": "openhab"}
 # MQTT_SSL_PARAMS = {"do_handshake": True}
 
 # Base mqtt topic the device publish and subscribes to, without leading slash.
 # Base topic format is bytestring.
 MQTT_BASE_TOPIC = "devices"
 
-MQTT_BROKER = ""
+MQTT_BROKER = "openhab"
 
 
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 export DEVICE=/dev/cu.usbmodem2101
+mpremote connect $DEVICE mip install logging
+mpremote connect $DEVICE mip install ssl
 mpremote connect $DEVICE fs cp -r app :
 mpremote connect $DEVICE fs cp -r lib :
 mpremote connect $DEVICE fs cp -r fonts :

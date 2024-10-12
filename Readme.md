@@ -77,6 +77,10 @@ After install config mode is automatically entered. You can enter config mode by
 - wie oben, jedoch
   - docker run --rm -it -v `pwd`:/builds -u `id -u`:`id -g` gcc-arm-none-eabi:latest /bin/bash
   - cd ports/rp2 statt ports/esp32
+  - add BOARD=RPI_PICO_W to make submodules and make 
+    - make clean BOARD=RPI_PICO_W  
+    - make submodules BOARD=RPI_PICO_W FROZEN_MANIFEST=/builds/ports/rp2/manifest.py
+    - make -j 4 BOARD=RPI_PICO_W FROZEN_MANIFEST=/builds/ports/rp2/manifest.py
   - gebaute firmware aus ports/rp2/build-xxx/firmware.uf auf gerät installieren
 
 # Development mode firmware

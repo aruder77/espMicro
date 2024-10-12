@@ -4,7 +4,8 @@
 mkdir .lib/homie/ || echo '.lib/homie already exists'
 cp -r ../microhomie/homie/* .lib/homie/
 cp -r ../microhomie/.lib/primitives .lib/
-cp ../micropython-mqtt/mqtt_as/mqtt_as.py .lib/
+mkdir .lib/mqtt_as || echo '.lib/mqtt_as already exists'
+cp ../micropython-mqtt/mqtt_as/__init__.py .lib/mqtt_as/
 
 # copy wifimgr
 cp ../WiFiManager/wifimgr.py .lib/esp_micro/
