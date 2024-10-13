@@ -65,7 +65,7 @@ class OTAUpdater:
 
         if self.new_version_dir in os.listdir(self.module):
             if '.version' in os.listdir(self.modulepath(self.new_version_dir)):
-                latest_version = self.get_version(
+                latest_version = self.get_version_for_path(
                     self.modulepath(self.new_version_dir), '.version')
                 self.logger.info('New update found: ', latest_version)
                 OTAUpdater._using_network(ssid, password)
@@ -112,7 +112,7 @@ class OTAUpdater:
         _logger.info('network config:', sta_if.ifconfig())
 
     def _check_for_new_version(self):
-        current_version = self.get_version(self.modulepath(self.main_dir))
+        current_version = self.get_version()
         singletons.displayController.setVersion(current_version)
         latest_version = self.get_latest_version()
 
@@ -127,7 +127,10 @@ class OTAUpdater:
             versionfile.write(latest_version)
             versionfile.close()
 
-    def get_version(self, directory, version_file_name='.version'):
+    def get_version(self):
+        return self.get_version_for_path(self.modulepath(self.main_dir))
+
+    def get_version_for_path(self, directory, version_file_name='.version'):
         if version_file_name in os.listdir(directory):
             with open(directory + '/' + version_file_name) as f:
                 version = f.read()

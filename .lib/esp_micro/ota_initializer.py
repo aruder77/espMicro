@@ -34,7 +34,7 @@ class OtaInitializer:
         self.otaUpdater.check_for_update_to_install_during_next_reboot()
 
     def get_version(self):
-        return self.otaUpdater.get_version('main')
+        return self.otaUpdater.get_version()
 
 def connectToWifi():
     if 'configMode' in os.listdir('/'):

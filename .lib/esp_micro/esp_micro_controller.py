@@ -4,6 +4,7 @@ import time
 
 import settings
 import network
+import core_version
 
 from machine import Pin
 import machine
@@ -27,9 +28,12 @@ from esp_micro.micro_controller_config import MicrocontrollerConfig, RP2PicoConf
     ArduinoNanoConnectConfig
 
 
+
 class EspMicroController:
 
     def __init__(self):
+        self.core_version_property = None
+        self.version_property = None
 
         # setup logger
         self.logger = get_logger()
@@ -70,6 +74,10 @@ class EspMicroController:
 
         # Homie device setup
         self.homie = self.create_homie_device(settings)
+        self.homie.add_node(self.create_esp_micro_node())
+        self.version_property.value = self.otaInitializer.get_version()
+        self.core_version_property.value = core_version.CORE_VERSION
+
 
     def create_homie_device(self, settings) -> HomieDevice:
         print('You must override this method and return an EspMicroDevice subclass!')
@@ -113,7 +121,7 @@ class EspMicroController:
         # Add the power property to the node
         node.add_property(update_property)
 
-        version_property = HomieProperty(
+        self.version_property = HomieProperty(
             id="version",
             name="current version",
             settable=False,
@@ -121,8 +129,17 @@ class EspMicroController:
         )
 
         # Add the power property to the node
-        node.add_property(version_property)
-        version_property.value = self.otaInitializer.get_version()
+        node.add_property(self.version_property)
+
+        self.core_version_property = HomieProperty(
+            id="core-version",
+            name="current core version",
+            settable=False,
+            datatype=STRING
+        )
+
+        # Add the power property to the node
+        node.add_property(self.core_version_property)
 
         return node
 

@@ -264,7 +264,7 @@ def handle_configure(client, request):
         write_mqtt(mqttServer, mqttUser, mqttPassword,
                    githubRepo, autoUpdate, unstableVersions)
 
-        time.sleep(5)
+        time.sleep(10)
 
         machine.reset()
         return True
